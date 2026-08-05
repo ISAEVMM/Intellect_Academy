@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Электронный дневник - Intellect Academy{% endblock %}</title>
+    <!-- Иконка для вкладки браузера -->
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="navbar">
+        <!-- Картинка-логотип в шапке -->
+        <a href="{% url 'home' %}" class="logo-link">
+            <img src="{% static 'img/favicon.png' %}" alt="Intellect Academy" class="logo-img">
+        </a>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'students_list' %}">Список учеников</a>
+            <a href="{% url 'profile' %}">👤 {{ user.username }}</a>
+            {% else %}
+            <a href="{% url 'login' %}">Войти</a>
+            <a href="{% url 'register' %}">Регистрация</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+
+</html>

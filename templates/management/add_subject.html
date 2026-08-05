@@ -1,0 +1,13 @@
+{% extends 'management/base.html' %}
+{% block title %}Добавить предмет{% endblock %}
+{% block content %}
+<div class="box" style="max-width: 500px; margin: 0 auto;">
+    <a href="{% url 'home' %}" class="back-link">← На главную</a>
+    <h2>📚 Добавить новый предмет</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Сохранить предмет</button>
+    </form>
+</div>
+{% endblock %}

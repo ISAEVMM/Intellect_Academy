@@ -1,0 +1,17 @@
+{% extends 'management/base.html' %}
+
+{% block title %}Регистрация - Учебный центр{% endblock %}
+
+{% block content %}
+<div class="box" style="max-width: 400px; margin: 0 auto;">
+    <h2>Регистрация аккаунта</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Зарегистрироваться</button>
+    </form>
+    <p style="margin-top: 15px; text-align: center;">
+        Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a>
+    </p>
+</div>
+{% endblock %}

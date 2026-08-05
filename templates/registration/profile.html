@@ -1,0 +1,16 @@
+{% extends 'management/base.html' %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+<div class="box" style="max-width: 500px; margin: 0 auto;">
+    <a href="{% url 'home' %}" class="back-link">← На главную</a>
+    <h2>Личный кабинет</h2>
+    <p><strong>Логин:</strong> {{ request.user.username }}</p>
+    <p><strong>Email:</strong> {{ request.user.email|default:"не указан" }}</p>
+    <p><strong>Роль:</strong> {{ request.user.profile.role }}</p>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+    <a href="{% url 'logout' %}" class="btn btn-danger">Выйти из аккаунта</a>
+</div>
+{% endblock %}

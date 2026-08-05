@@ -1,0 +1,16 @@
+{% extends 'management/base.html' %}
+
+{% block title %}Добавить ученика в систему{% endblock %}
+
+{% block content %}
+<div class="box" style="max-width: 500px; margin: 0 auto;">
+    <a href="{% url 'students_list' %}" class="back-link">← Назад к списку учеников</a>
+    <h2>➕ Регистрация нового ученика</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Зарегистрировать ученика</button>
+    </form>
+</div>
+{% endblock %}

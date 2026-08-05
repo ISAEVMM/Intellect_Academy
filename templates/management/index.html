@@ -1,0 +1,120 @@
+{% extends 'management/base.html' %}
+
+{% block title %}Электронный дневник - Учебный центр{% endblock %}
+
+{% block content %}
+<div class="box box-header-flex">
+    <div>
+        <h1 class="welcome-title">Привет, {{ request.user.username }}!</h1>
+        <p class="role-text">
+            Ваша роль в системе: <span class="role-pill">{{ role }}</span>
+        </p>
+    </div>
+    {% if role == 'admin' %}
+    <div>
+        <a href="/admin/" class="btn btn-dark">⚙️ Панель администратора</a>
+    </div>
+    {% endif %}
+</div>
+
+{% if role == 'admin' %}
+<!-- Кнопки быстрого добавления для администратора -->
+<div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+    <a href="{% url 'add_subject' %}" class="btn">➕ Добавить предмет</a>
+    <a href="{% url 'add_group' %}" class="btn">➕ Создать группу</a>
+    <a href="{% url 'students_list' %}" class="btn btn-dark">👥 Список учеников</a>
+</div>
+
+<div class="box">
+    <h2>📚 Управление предметами</h2>
+    <div class="grid-subjects">
+        {% for subject in subjects %}
+        <a href="{% url 'subject_detail' subject.id %}" class="subject-badge-link">
+            📖 {{ subject.name }}
+        </a>
+        {% empty %}
+        <p class="empty-text">Предметы еще не добавлены.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="box">
+    <h2>👥 Учебные группы</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Название группы</th>
+                <th>Предмет</th>
+                <th>Преподаватель</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in groups %}
+            <tr>
+                <td style="padding: 0;">
+                    <a href="{% url 'group_detail' group.id %}" class="table-group-cell-link">
+                        {{ group.name }}
+                        {% if group.schedule %}
+                        <span class="schedule-text">🕒 {{ group.schedule }}</span>
+                        {% endif %}
+                    </a>
+                </td>
+                <td>{{ group.subject.name }}</td>
+                <td>{{ group.teacher.username|default:"Не назначен" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="empty-text">Группы пока не созданы.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% elif role == 'teacher' %}
+<div class="box">
+    <h2>🎓 Мои преподаваемые группы и журналы</h2>
+    <div class="grid-cards">
+        {% for group in my_groups %}
+        <a href="{% url 'group_detail' group.id %}" class="card-item card-group-link">
+            <h3 class="card-title">📚 {{ group.name }}</h3>
+            <p class="card-subtitle">Предмет: <strong>{{ group.subject.name }}</strong></p>
+            {% if group.schedule %}
+            <p class="card-subtitle">Время: <strong>🕒 {{ group.schedule }}</strong></p>
+            {% endif %}
+
+            <div class="lessons-container" onclick="event.stopPropagation();">
+                <p class="lessons-label">Журналы занятий:</p>
+                {% for lesson in group.lessons.all %}
+                <a href="{% url 'lesson_detail' lesson.id %}" class="lesson-tag">📅 {{ lesson.date }}</a>
+                {% empty %}
+                <span class="no-lessons">Уроков пока нет</span>
+                {% endfor %}
+            </div>
+        </a>
+        {% empty %}
+        <p class="empty-text">Вам пока не назначены учебные группы.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% elif role == 'student' %}
+<div class="box">
+    <h2>📖 Мои учебные группы</h2>
+    <div class="grid-subjects">
+        {% for group in my_groups %}
+        <a href="{% url 'group_detail' group.id %}" class="card-item card-group-link">
+            <h3 class="card-title">📚 {{ group.name }}</h3>
+            <p class="card-subject">Предмет: <strong>{{ group.subject.name }}</strong></p>
+            {% if group.schedule %}
+            <p class="card-subject">Время: <strong>🕒 {{ group.schedule }}</strong></p>
+            {% endif %}
+            <p class="card-teacher">Преподаватель: {{ group.teacher.username|default:"Не указан" }}</p>
+        </a>
+        {% empty %}
+        <p class="empty-text">Вы пока не добавлены ни в одну группу.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

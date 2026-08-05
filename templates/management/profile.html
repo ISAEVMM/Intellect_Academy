@@ -1,0 +1,47 @@
+{% extends 'management/base.html' %}
+
+{% block title %}Личный кабинет - {{ profile_user.username }}{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h1>👤 Профиль пользователя: {{ profile_user.username }}</h1>
+    <p><strong>Электронная почта:</strong> {{ profile_user.email|default:"Не указана" }}</p>
+    <p><strong>Роль в системе:</strong> <span class="role-pill">{{ profile.get_role_display }}</span></p>
+    <p><strong>Пол:</strong>
+        {% if profile.gender == 'male' %}👨 Мужской
+        {% elif profile.gender == 'female' %}👩 Женский
+        {% else %}Не указан{% endif %}
+    </p>
+    {% if profile.role == 'student' %}
+    <p><strong>Оплата:</strong> {% if profile.is_paid %}✅ Оплачено{% else %}❌ Не оплачено{% endif %}</p>
+    {% endif %}
+
+    <!-- Кнопка выхода расположена прямо внутри карточки профиля -->
+    <div style="margin-top: 20px;">
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">🚪 Выйти из аккаунта</button>
+        </form>
+    </div>
+</div>
+
+<div class="box">
+    <h2>📚 Учебные группы пользователя</h2>
+    <div class="grid-cards">
+        {% for group in groups %}
+        <a href="{% url 'group_detail' group.id %}" class="card-item card-group-link">
+            <h3 class="card-title">📖 {{ group.name }}</h3>
+            <p class="card-subject">Предмет: <strong>{{ group.subject.name }}</strong></p>
+            {% if group.schedule %}
+            <p class="card-subject">Время: <strong>🕒 {{ group.schedule }}</strong></p>
+            {% endif %}
+            {% if profile.role == 'student' %}
+            <p class="card-teacher">Преподаватель: {{ group.teacher.username|default:"Не назначен" }}</p>
+            {% endif %}
+        </a>
+        {% empty %}
+        <p class="empty-text">Пользователь пока не состоит ни в одной группе.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

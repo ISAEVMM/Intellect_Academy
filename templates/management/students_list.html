@@ -1,0 +1,67 @@
+{% extends 'management/base.html' %}
+
+{% block title %}Список всех учеников{% endblock %}
+
+{% block content %}
+<div class="box">
+    <a href="{% url 'home' %}" class="back-link">← На главную</a>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h1 class="subject-page-title" style="margin: 0;">👨‍🎓 Список всех учеников</h1>
+
+        {% if role == 'admin' or role == 'teacher' %}
+        <a href="{% url 'add_student_system' %}" class="btn">➕ Зарегистрировать ученика</a>
+        {% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Имя ученика</th>
+                <th>Email</th>
+                <th>Статус оплаты</th>
+                {% if role == 'admin' %}
+                <th style="text-align: center;">Оплата / Действие</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td class="table-student-name">👤 {{ student.username }}</td>
+                <td>{{ student.email|default:"Не указан" }}</td>
+                <td>
+                    {% if student.profile.is_paid %}
+                    <span class="badge-paid">✅ Оплачено</span>
+                    {% else %}
+                    <span class="badge-unpaid">❌ Не оплачено</span>
+                    {% endif %}
+                </td>
+                {% if role == 'admin' %}
+                <td style="text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <form method="POST" class="payment-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="student_id" value="{{ student.id }}">
+                            <input type="checkbox" name="is_paid" {% if student.profile.is_paid %}checked{% endif %}
+                                class="payment-checkbox">
+                            <button type="submit" class="btn btn-success btn-sm">Ок</button>
+                        </form>
+                        <form action="{% url 'delete_student' student.id %}" method="POST" style="margin: 0;"
+                            onsubmit="return confirm('Удалить ученика из системы?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                        </form>
+                    </div>
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty-text">В системе пока нет зарегистрированных учеников.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

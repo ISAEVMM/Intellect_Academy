@@ -1,0 +1,38 @@
+{% extends 'management/base.html' %}
+
+{% block title %}Предмет: {{ subject.name }}{% endblock %}
+
+{% block content %}
+<div class="box">
+    <a href="{% url 'home' %}" class="back-link">← На главную</a>
+    <h1 class="subject-page-title">📖 Предмет: {{ subject.name }}</h1>
+
+    <h2 class="subject-section-title">Учебные группы по этому предмету:</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Название группы</th>
+                <th>Преподаватель</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in groups %}
+            <tr>
+                <!-- Делаем ячейку с нулевыми отступами, чтобы ссылка заняла всё пространство -->
+                <td style="padding: 0;">
+                    <a href="{% url 'group_detail' group.id %}" class="table-group-cell-link">
+                        {{ group.name }}
+                    </a>
+                </td>
+                <td>{{ group.teacher.username|default:"Не назначен" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" class="empty-text">По этому предмету пока нет групп.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

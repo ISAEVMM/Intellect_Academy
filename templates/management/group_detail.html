@@ -1,0 +1,84 @@
+{% extends 'management/base.html' %}
+
+{% block title %}Группа: {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="box">
+    <a href="{% url 'home' %}" class="back-link">← На главную</a>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 class="group-page-title">📚 Группа: {{ group.name }}</h1>
+
+        {% if role == 'admin' or role == 'teacher' %}
+        <form action="{% url 'delete_group' group.id %}" method="POST"
+            onsubmit="return confirm('Вы уверены, что хотите удалить эту группу?');" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">🗑️ Удалить группу</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="group-info-box">
+        <p><strong>Предмет:</strong> {{ group.subject.name }}</p>
+        <p><strong>Преподаватель:</strong> {{ group.teacher.username|default:"Не назначен" }}</p>
+        {% if group.schedule %}
+        <p><strong>Расписание:</strong> 🕒 {{ group.schedule }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Блок добавления ученика в группу -->
+    {% if role == 'admin' or role == 'teacher' %}
+    <div class="box" style="margin-top: 20px; background: #fdfdfd; border: 1px dashed #ccc; padding: 15px;">
+        <h3>➕ Добавить ученика в группу</h3>
+        <form action="{% url 'add_student_to_group' group.id %}" method="POST"
+            style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+            {% csrf_token %}
+            <select name="student_id" class="form-control" style="padding: 6px; flex-grow: 1;">
+                {% for student in all_students %}
+                <option value="{{ student.id }}">{{ student.username }} ({{ student.email|default:"нет email" }})
+                </option>
+                {% empty %}
+                <option value="">Нет доступных учеников</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-sm">Добавить</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <h2 class="group-section-title">👥 Ученики в группе</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Имя ученика</th>
+                <th>Email</th>
+                {% if role == 'admin' or role == 'teacher' %}
+                <th style="text-align: center;">Действие</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td class="table-student-name">👤 {{ student.username }}</td>
+                <td>{{ student.email|default:"Не указан" }}</td>
+                {% if role == 'admin' or role == 'teacher' %}
+                <td style="text-align: center;">
+                    <form action="{% url 'remove_student_from_group' group.id student.id %}" method="POST"
+                        style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Убрать ученика из группы?');">Исключить</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="empty-text">В этой группе пока нет учеников.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
