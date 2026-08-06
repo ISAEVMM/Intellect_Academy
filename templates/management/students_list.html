@@ -3,25 +3,26 @@
 {% block title %}Список всех учеников{% endblock %}
 
 {% block content %}
-<div class="box">
+<div class="box" style="overflow-x: auto;">
     <a href="{% url 'home' %}" class="back-link">← На главную</a>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h1 class="subject-page-title" style="margin: 0;">👨‍🎓 Список всех учеников</h1>
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+        <h1 class="subject-page-title" style="margin: 0; font-size: 24px;">👨‍🎓 Список всех учеников</h1>
 
         {% if role == 'admin' or role == 'teacher' %}
-        <a href="{% url 'add_student_system' %}" class="btn">➕ Зарегистрировать ученика</a>
+        <a href="{% url 'add_student_system' %}" class="btn">➕ Зарегистрировать</a>
         {% endif %}
     </div>
 
-    <table>
+    <table style="width: 100%; min-width: 500px;">
         <thead>
             <tr>
                 <th>Имя ученика</th>
                 <th>Email</th>
                 <th>Статус оплаты</th>
                 {% if role == 'admin' %}
-                <th style="text-align: center;">Оплата / Действия</th>
+                <th style="text-align: center;">Действия</th>
                 {% endif %}
             </tr>
         </thead>
@@ -40,7 +41,7 @@
                 {% if role == 'admin' %}
                 <td style="text-align: center;">
                     <div
-                        style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                        style="display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;">
                         <!-- Форма изменения статуса оплаты -->
                         <form method="POST" class="payment-form"
                             style="display: flex; align-items: center; gap: 4px; margin: 0;">
