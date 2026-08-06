@@ -9,7 +9,12 @@ from .models import Attendance, Group, Lesson, UserProfile, Subject
 @login_required
 def index(request):
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    # ВРЕМЕННО: принудительно даем права администратора для ISAEVM3
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
 
     context = {'role': role}
 
@@ -30,7 +35,11 @@ def index(request):
 def lesson_detail(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
 
     is_teacher_of_group = role == 'teacher' and lesson.group.teacher == user
     can_edit = role == 'admin' or is_teacher_of_group
@@ -100,7 +109,11 @@ def group_detail(request, group_id):
     group = get_object_or_404(Group, id=group_id)
     students = group.students.all()
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
     
     all_students = User.objects.filter(profile__role='student').exclude(id__in=students.values_list('id', flat=True))
     
@@ -116,7 +129,11 @@ def group_detail(request, group_id):
 @login_required
 def students_list_view(request):
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
     
     if role not in ['admin', 'teacher']:
         return redirect('home')
@@ -142,7 +159,11 @@ def students_list_view(request):
 @login_required
 def delete_student_from_system(request, student_id):
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
     
     if role != 'admin':
         return redirect('students_list')
@@ -155,7 +176,11 @@ def delete_student_from_system(request, student_id):
 @login_required
 def delete_group(request, group_id):
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
     
     group = get_object_or_404(Group, id=group_id)
     
@@ -170,7 +195,11 @@ def delete_group(request, group_id):
 @login_required
 def remove_student_from_group(request, group_id, student_id):
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
     
     group = get_object_or_404(Group, id=group_id)
     
@@ -206,7 +235,12 @@ def profile_view(request):
 @login_required
 def add_subject_view(request):
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
+        
     if role != 'admin':
         return redirect('home')
         
@@ -223,7 +257,12 @@ def add_subject_view(request):
 @login_required
 def add_group_view(request):
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
+        
     if role != 'admin':
         return redirect('home')
         
@@ -240,7 +279,12 @@ def add_group_view(request):
 @login_required
 def add_student_to_group(request, group_id):
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
+        
     group = get_object_or_404(Group, id=group_id)
     
     is_teacher_owner = role == 'teacher' and group.teacher == user
@@ -258,7 +302,11 @@ def add_student_to_group(request, group_id):
 @login_required
 def add_student_to_system_view(request):
     user = request.user
-    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    
+    if user.username == 'ISAEVM3':
+        role = 'admin'
+    else:
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
     
     if role not in ['admin', 'teacher']:
         return redirect('home')
