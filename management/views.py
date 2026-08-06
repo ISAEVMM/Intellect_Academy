@@ -69,7 +69,6 @@ def register_view(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
 
-            # При обычной регистрации роль всегда строго 'student'
             UserProfile.objects.update_or_create(user=user, defaults={'role': 'student'})
 
             login(request, user)
@@ -77,6 +76,11 @@ def register_view(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+
+def custom_logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 @login_required
