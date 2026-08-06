@@ -4,80 +4,70 @@
 
 {% block content %}
 <div class="box">
-    <div
-        style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+    <div class="main-header-row">
         <div>
-            <h1 style="margin: 0 0 5px 0; font-size: 26px;">Привет, {{ request.user.username }}!</h1>
-            <p style="margin: 0; color: #666;">Ваша роль в системе:
-                <span class="badge"
-                    style="background: #eef2f7; padding: 4px 8px; border-radius: 4px; font-weight: bold; color: #333;">
-                    {{ role|upper }}
-                </span>
+            <h1>Привет, {{ request.user.username }}!</h1>
+            <p class="role-text">Ваша роль в системе:
+                <span class="badge">{{ role|upper }}</span>
             </p>
         </div>
 
         {% if role == 'admin' %}
-        <a href="{% url 'students_list' %}" class="btn" style="background-color: #6c757d; color: white;">👥 Список
-            учеников</a>
+        <a href="{% url 'students_list' %}" class="btn btn-secondary">👥 Список учеников</a>
         {% endif %}
     </div>
 
     {% if role == 'admin' %}
-    <div style="margin-bottom: 25px;">
-        <h3 style="margin-bottom: 12px; font-size: 18px;">⚡ Панель администратора</h3>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <a href="{% url 'add_subject' %}" class="btn" style="background-color: #28a745; color: white;">➕ Добавить
-                предмет</a>
-            <a href="{% url 'add_group' %}" class="btn" style="background-color: #007bff; color: white;">➕ Создать
-                группу</a>
-            <a href="{% url 'students_list' %}" class="btn" style="background-color: #17a2b8; color: white;">👨‍🎓 Все
-                ученики</a>
+    <div class="section-block">
+        <h3>⚡ Панель администратора</h3>
+        <div class="btn-group">
+            <a href="{% url 'add_subject' %}" class="btn btn-success">➕ Добавить предмет</a>
+            <a href="{% url 'add_group' %}" class="btn btn-primary">➕ Создать группу</a>
+            <a href="{% url 'students_list' %}" class="btn btn-info">👨‍🎓 Все ученики</a>
+            <a href="/admin/" class="btn btn-dark" target="_blank">🛠️ Админка Django</a>
         </div>
     </div>
 
-    <div style="margin-bottom: 25px;">
-        <h3 style="margin-bottom: 12px; font-size: 18px;">📚 Управление предметами</h3>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <div class="section-block">
+        <h3>📚 Управление предметами</h3>
+        <div class="btn-group">
             {% for subject in subjects %}
-            <a href="{% url 'subject_detail' subject.id %}" class="btn"
-                style="background: #f8f9fa; border: 1px solid #ddd; color: #333;">
+            <a href="{% url 'subject_detail' subject.id %}" class="btn btn-light-subject">
                 📖 {{ subject.name }}
             </a>
             {% empty %}
-            <p style="color: #666; font-size: 14px;">Предметы пока не добавлены.</p>
+            <p class="empty-msg">Предметы пока не добавлены.</p>
             {% endfor %}
         </div>
     </div>
     {% endif %}
 
     <div>
-        <h3 style="margin-bottom: 12px; font-size: 18px;">🏫 Учебные группы</h3>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
+        <h3>🏫 Учебные группы</h3>
+        <div class="groups-list">
             {% if role == 'admin' %}
             {% for group in groups %}
-            <div
-                style="padding: 12px; background: #f8f9fa; border-radius: 6px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div class="group-card">
                 <div>
                     <strong>{{ group.name }}</strong> (Предмет: {{ group.subject.name }})
-                    <br><small style="color: #666;">Преподаватель: {{ group.teacher.username|default:"Не назначен"
+                    <br><small class="text-muted">Преподаватель: {{ group.teacher.username|default:"Не назначен"
                         }}</small>
                 </div>
                 <a href="{% url 'group_detail' group.id %}" class="btn btn-sm">Открыть</a>
             </div>
             {% empty %}
-            <p style="color: #666; font-size: 14px;">Группы пока не созданы.</p>
+            <p class="empty-msg">Группы пока не созданы.</p>
             {% endfor %}
             {% else %}
             {% for group in my_groups %}
-            <div
-                style="padding: 12px; background: #f8f9fa; border-radius: 6px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div class="group-card">
                 <div>
                     <strong>{{ group.name }}</strong> (Предмет: {{ group.subject.name }})
                 </div>
                 <a href="{% url 'group_detail' group.id %}" class="btn btn-sm">Открыть</a>
             </div>
             {% empty %}
-            <p style="color: #666; font-size: 14px;">Вы пока не состоите ни в одной группе.</p>
+            <p class="empty-msg">Вы пока не состоите ни в одной группе.</p>
             {% endfor %}
             {% endif %}
         </div>

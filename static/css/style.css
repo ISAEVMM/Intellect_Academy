@@ -527,3 +527,125 @@ form select:focus {
     padding: 10px;
   }
 }
+
+/* --- Стили главной страницы и мобильная адаптивность --- */
+.main-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.main-header-row h1 {
+  margin: 0 0 5px 0;
+  font-size: 26px;
+}
+
+.role-text {
+  margin: 0;
+  color: #666;
+}
+
+.badge {
+  background: #eef2f7;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #333;
+}
+
+.section-block {
+  margin-bottom: 25px;
+}
+
+.section-block h3,
+div > h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
+}
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+.btn-dark {
+  background-color: #343a40;
+  color: white;
+}
+.btn-light-subject {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
+.groups-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.group-card {
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.text-muted {
+  color: #666;
+}
+.empty-msg {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Медиазапросы для телефонов */
+@media screen and (max-width: 768px) {
+  .box {
+    padding: 15px !important;
+    margin: 10px !important;
+  }
+
+  .main-header-row h1 {
+    font-size: 22px;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .group-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .group-card .btn {
+    width: 100%;
+  }
+}
