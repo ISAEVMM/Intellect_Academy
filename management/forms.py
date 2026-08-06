@@ -5,7 +5,6 @@ from .models import Subject, Group
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label="Пароль")
-    role = forms.ChoiceField(choices=UserProfile.ROLE_CHOICES, label="Роль в системе")
     gender = forms.ChoiceField(choices=UserProfile.GENDER_CHOICES, required=False, label="Пол")
 
     class Meta:
@@ -14,8 +13,7 @@ class UserRegistrationForm(forms.ModelForm):
         labels = {
             'username': 'Логин',
             'email': 'Электронная почта'
-        }   
-
+        } 
 
 class SubjectForm(forms.ModelForm):
     class Meta:

@@ -69,8 +69,8 @@ def register_view(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
 
-            selected_role = form.cleaned_data['role']
-            UserProfile.objects.update_or_create(user=user, defaults={'role': selected_role})
+            # При обычной регистрации роль всегда строго 'student'
+            UserProfile.objects.update_or_create(user=user, defaults={'role': 'student'})
 
             login(request, user)
             return redirect('home')
