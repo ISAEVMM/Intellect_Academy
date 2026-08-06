@@ -485,3 +485,45 @@ form select:focus {
   width: auto; /* Сохраняет пропорции логотипа */
   vertical-align: middle;
 }
+
+/* --- Адаптивность для мобильных телефонов --- */
+@media screen and (max-width: 768px) {
+  /* Уменьшаем отступы основного контейнера на телефоне */
+  .box {
+    padding: 15px !important;
+    margin: 10px !important;
+    border-radius: 8px;
+  }
+
+  /* Делаем заголовки чуть меньше, чтобы они не ломали экран */
+  h1 {
+    font-size: 22px !important;
+  }
+
+  h3 {
+    font-size: 16px !important;
+  }
+
+  /* Все группы кнопок переносим друг под друга или делаем на всю ширину */
+  .btn {
+    display: inline-block;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+  /* Таблицы делаем с прокруткой, чтобы они не сжимали текст */
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Шапка сайта на мобилках */
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: 10px;
+  }
+}
