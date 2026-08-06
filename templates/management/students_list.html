@@ -21,7 +21,7 @@
                 <th>Email</th>
                 <th>Статус оплаты</th>
                 {% if role == 'admin' %}
-                <th style="text-align: center;">Оплата / Действие</th>
+                <th style="text-align: center;">Оплата / Действия</th>
                 {% endif %}
             </tr>
         </thead>
@@ -39,14 +39,29 @@
                 </td>
                 {% if role == 'admin' %}
                 <td style="text-align: center;">
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <form method="POST" class="payment-form">
+                    <div
+                        style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                        <!-- Форма изменения статуса оплаты -->
+                        <form method="POST" class="payment-form"
+                            style="display: flex; align-items: center; gap: 4px; margin: 0;">
                             {% csrf_token %}
                             <input type="hidden" name="student_id" value="{{ student.id }}">
                             <input type="checkbox" name="is_paid" {% if student.profile.is_paid %}checked{% endif %}
                                 class="payment-checkbox">
                             <button type="submit" class="btn btn-success btn-sm">Ок</button>
                         </form>
+
+                        <!-- Кнопка повышения до преподавателя -->
+                        <form method="POST" style="margin: 0;"
+                            onsubmit="return confirm('Повысить пользователя {{ student.username }} до преподавателя?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="student_id" value="{{ student.id }}">
+                            <button type="submit" name="make_teacher" class="btn btn-sm"
+                                style="background-color: #17a2b8; color: white;"
+                                title="Сделать преподавателем">👨‍🏫</button>
+                        </form>
+
+                        <!-- Кнопка удаления ученика -->
                         <form action="{% url 'delete_student' student.id %}" method="POST" style="margin: 0;"
                             onsubmit="return confirm('Удалить ученика из системы?');">
                             {% csrf_token %}

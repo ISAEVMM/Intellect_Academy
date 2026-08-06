@@ -140,8 +140,16 @@ def students_list_view(request):
 
     if request.method == 'POST' and role == 'admin':
         student_id = request.POST.get('student_id')
-        is_paid = request.POST.get('is_paid') == 'on'
         
+        # Если нажали кнопку смены роли на учителя
+        if 'make_teacher' in request.POST:
+            target_student = get_object_or_404(User, id=student_id)
+            target_student.profile.role = 'teacher'
+            target_student.profile.save()
+            return redirect('students_list')
+            
+        # Иначе обрабатываем статус оплаты
+        is_paid = request.POST.get('is_paid') == 'on'
         target_student = get_object_or_404(User, id=student_id)
         target_student.profile.is_paid = is_paid
         target_student.profile.save()
@@ -152,106 +160,6 @@ def students_list_view(request):
         'role': role,
     }
     return render(request, 'management/students_list.html', context)
-
-
-@login_required
-def delete_student_from_system(request, student_id):
-    user = request.user
-    role = get_user_role(user)
-    
-    if role != 'admin':
-        return redirect('students_list')
-
-    target_student = get_object_or_404(User, id=student_id, profile__role='student')
-    target_student.delete()
-    return redirect('students_list')
-
-
-@login_required
-def delete_group(request, group_id):
-    user = request.user
-    role = get_user_role(user)
-    
-    group = get_object_or_404(Group, id=group_id)
-    
-    is_teacher_owner = role == 'teacher' and group.teacher == user
-    if role != 'admin' and not is_teacher_owner:
-        return redirect('home')
-
-    group.delete()
-    return redirect('home')
-
-
-@login_required
-def remove_student_from_group(request, group_id, student_id):
-    user = request.user
-    role = get_user_role(user)
-    
-    group = get_object_or_404(Group, id=group_id)
-    
-    is_teacher_owner = role == 'teacher' and group.teacher == user
-    if role != 'admin' and not is_teacher_owner:
-        return redirect('group_detail', group_id=group.id)
-
-    student = get_object_or_404(User, id=student_id)
-    group.students.remove(student)
-    return redirect('group_detail', group_id=group.id)
-
-
-@login_required
-def profile_view(request):
-    user = request.user
-    profile = getattr(user, 'profile', None)
-    
-    if profile and profile.role == 'teacher':
-        groups = user.teacher_groups.all()
-    elif profile and profile.role == 'student':
-        groups = user.student_groups.all()
-    else:
-        groups = []
-        
-    context = {
-        'profile_user': user,
-        'profile': profile,
-        'groups': groups,
-    }
-    return render(request, 'management/profile.html', context)
-
-
-@login_required
-def add_subject_view(request):
-    user = request.user
-    role = get_user_role(user)
-    
-    if role != 'admin':
-        return redirect('home')
-        
-    if request.method == 'POST':
-        form = SubjectForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = SubjectForm()
-    return render(request, 'management/add_subject.html', {'form': form})
-
-
-@login_required
-def add_group_view(request):
-    user = request.user
-    role = get_user_role(user)
-    
-    if role != 'admin':
-        return redirect('home')
-        
-    if request.method == 'POST':
-        form = GroupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = GroupForm()
-    return render(request, 'management/add_group.html', {'form': form})
 
 
 @login_required
